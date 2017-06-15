@@ -52,8 +52,8 @@ Location은 커널 소스 트리의 최상위 폴더로부터 상대 경로를 �
       :Location: Documentation/
       :Keywords: text files, Sphinx, DocBook.
       :Description: 커널 소스에 포함된 모든 문서들을 가지고 있다. 웹상에 개시된
-      문서보다 커널 소스에 포함되어 Documentation 디렉토리에 있는 문서가 항상
-      최신 문서이다. 
+        문서보다 커널 소스에 포함되어 Documentation 디렉토리에 있는 문서가 항상
+        최신 문서이다. 
 
     * Title: **The Kernel Hacking HOWTO**
 
