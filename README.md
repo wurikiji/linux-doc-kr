@@ -3,4 +3,4 @@
 직접 커널을 수정하면서 필요한 문서들을 위주로 먼저 번역합니다. 
 
 ## TODO
-- `Makefile`을 통한 pdf/html 형태의 문서록 생
+- `Makefile`을 통한 pdf/html 형태의 문서록 생성
