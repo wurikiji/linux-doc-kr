@@ -1,57 +1,59 @@
 .. _kernel_docs:
 
-Index of Documentation for People Interested in Writing and/or Understanding the Linux Kernel
-=============================================================================================
+리눅스 커널을 이해하고 작성하기 위한 문서 색인
+=============================================
 
           Juan-Mariano de Goyeneche <jmseyas@dit.upm.es>
+          번역(Translation): Gihwan Oh <wurikiji@gmail.com>
 
-The need for a document like this one became apparent in the
-linux-kernel mailing list as the same questions, asking for pointers
-to information, appeared again and again.
+정보에 대한 동일한 질문이 계속해서 반복되는 리눅스-커널 메일링 리스트를 통해,
+현재 문서와 같은 리눅스 커널에 대한 문서 정리의 필요성이 분명히 나타났다.
 
-Fortunately, as more and more people get to GNU/Linux, more and more
-get interested in the Kernel. But reading the sources is not always
-enough. It is easy to understand the code, but miss the concepts, the
-philosophy and design decisions behind this code.
+점점 더 많은 사람들이 GNU/Linux를 사용하고, 리눅스 커널에 관심을
+갖기 시작하였지만, 단순히 커널 소스코드를 읽고 해석하는 것만으로는 리눅스 커널을
+완전히 이해하기가 쉽지 않은 일이다. 코드를 읽으면 코드 그 자체를 이해는 할 수 
+있겠지만, 리눅스 커널을 구현하는 동안의 컨셉/철학/설계/의사결정에 대한 내용을
+알 수는 없다. 
 
-Unfortunately, not many documents are available for beginners to
-start. And, even if they exist, there was no "well-known" place which
-kept track of them. These lines try to cover this lack. All documents
-available on line known by the author are listed, while some reference
-books are also mentioned.
+아직까지 커널개발의 초보자들을 위한 문서나 책들이 존재하지 않고, 커널에 대해
+다룬 여러 문서들도 쉽게 찾기 어렵게 잘 알려지지 않은 여러 사이트에 걸쳐 퍼져
+있다. 이러한 문제점을 해결하기 위해 현재 문서를 작성하기 시작하였다. 현재 문서에
+언급되는 모든 문서와 책들은 온/오프라인을 통해 쉽게 찾을 수 있다. 
 
-PLEASE, if you know any paper not listed here or write a new document,
-send me an e-mail, and I'll include a reference to it here. Any
-corrections, ideas or comments are also welcomed.
+이 문서에 빠진 논문/문서/책들에 대한 정보를 알고 있거나, 커널 설명에 대한 새로운
+문서를 작성하는 경우, Juan-Mariano의 메일로 보낼경우 현재 문서에 추가하여 다른
+사용자에게 더 큰 도움을 줄 수 있도록 하겠다. 그 밖에 문서 작성에 대한 아이디어나
+오타 수정과 같은 다양한 내용 또한 현재 문서를 작성하는데 많은 도움이 될 것이다.
 
-The papers that follow are listed in no particular order. All are
-cataloged with the following fields: the document's "Title", the
-"Author"/s, the "URL" where they can be found, some "Keywords" helpful
-when searching for specific topics, and a brief "Description" of the
-Document.
+문서에 언급된 자료들에 대한 순서는 무작위이다. 모든 문서들은 제목/저자/URL로 
+구성되어 소개되며, 특정 주제에 대해 쉽게 찾을 수 있도록 키워드를 제공한다. 또한
+해당 문서에 대한 간략한 설명을 포함하고 있다. 
+
+번역 본에서는 Name, Author, Location, Keywords에 대한 번역은 하지 않고, 
+Descriptions에 대한 번역만 수행한다.
 
 Enjoy!
 
 .. note::
 
-   The documents on each section of this document are ordered by its
-   published date, from the newest to the oldest.
+    각 섹션에 소개되는 문서들은 작성 시기 순(최신순)으로 정렬되어 있다.
 
-Docs at the Linux Kernel tree
------------------------------
+리눅스 커널 소스코드에 포함된 문서들
+-----------------------------------
 
-The DocBook books should be built with ``make {htmldocs | psdocs | pdfdocs}``.
-The Sphinx books should be built with ``make {htmldocs | pdfdocs | epubdocs}``.
+DocBook 포맷은 리눅스 커널 트리에서 ``make {htmldocs | psdocs | pdfdocs}`` 명령으로
+생성할 수 있으며, Sphinx 포맷의 문서는 ``amek {htmldocs | pdfdocs | epubdocs}`` 
+명령으로 생성할 수 있다.
+Location은 커널 소스 트리의 최상위 폴더로부터 상대 경로를 나타낸다.
 
     * Name: **linux/Documentation**
 
       :Author: Many.
       :Location: Documentation/
       :Keywords: text files, Sphinx, DocBook.
-      :Description: Documentation that comes with the kernel sources,
-        inside the Documentation directory. Some pages from this document
-        (including this document itself) have been moved there, and might
-        be more up to date than the web version.
+      :Description: 커널 소스에 포함된 모든 문서들을 가지고 있다. 웹상에 개시된
+      문서보다 커널 소스에 포함되어 Documentation 디렉토리에 있는 문서가 항상
+      최신 문서이다. 
 
     * Title: **The Kernel Hacking HOWTO**
 
