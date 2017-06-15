@@ -61,16 +61,14 @@ Location은 커널 소스 트리의 최상위 폴더로부터 상대 경로를 �
       :Location: Documentation/DocBook/kernel-hacking.tmpl
       :Keywords: HOWTO, kernel contexts, deadlock, locking, modules,
         symbols, return conventions.
-      :Description: From the Introduction: "Please understand that I
-        never wanted to write this document, being grossly underqualified,
-        but I always wanted to read it, and this was the only way. I
-        simply explain some best practices, and give reading entry-points
-        into the kernel sources. I avoid implementation details: that's
-        what the code is for, and I ignore whole tracts of useful
-        routines. This document assumes familiarity with C, and an
-        understanding of what the kernel is, and how it is used. It was
-        originally written for the 2.3 kernels, but nearly all of it
-        applies to 2.2 too; 2.0 is slightly different".
+      :Description: From the Introduction: "이 문서 작성자는 원래 문서 만들기
+        싫었다고 합니다. 그걸 감안하고 보면 좋을 거래요. 좋은 예제들과 함께
+        커널 소스코드를 공부하기 좋은 시작점들을 알려주는 문서입니다. 상세한 구현
+        방법은 그냥 코딩하는 방법이니까 생략하고, 유용한 코딩 스킬이나 함수도
+        직접 공부하도록 생략한. C 언어에 친숙하고 리눅스 커널이 무슨일을 
+        하는지, 어떻게 사용되는지 알고 있는 사람들을 대상으로 작성하였다.
+        처음에는 2.3 버전으로 작성 시작하였다." 2.3버전으로 작성하였으니, 현재
+        기준으로는 좀 다른 내용이 있을 수도 있겠다.
 
     * Title: **Linux Kernel Locking HOWTO**
 
@@ -88,6 +86,7 @@ Location은 커널 소스 트리의 최상위 폴더로부터 상대 경로를 �
 
 On-line docs
 ------------
+아래의 문서들은 이용자들에 따라서 필요할 경우 찾아 보면 된다. 번역은 생략한다.
 
     * Title: **Linux Kernel Mailing List Glossary**
 
