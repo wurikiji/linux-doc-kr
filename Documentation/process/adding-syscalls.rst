@@ -1,19 +1,20 @@
-Adding a New System Call
+새로운 시스템 콜 추가하기
 ========================
 
-This document describes what's involved in adding a new system call to the
-Linux kernel, over and above the normal submission advice in
-:ref:`Documentation/process/submitting-patches.rst <submittingpatches>`.
+이 문서는 아래의 문서 1에서 제시하는 커널 패치를 제출하는 방법에 이어, 
+리눅스 커널에 시스템 콜을 추가하는 방법에 대해서 다룹니다. 
+:ref: 1. `Documentation/process/submitting-patches.rst <submittingpatches>`.
 
 
-System Call Alternatives
-------------------------
+시스템 콜의 대안 (시스템 콜 외의 방법 사용하기)
+----------------------------------------------
 
-The first thing to consider when adding a new system call is whether one of
-the alternatives might be suitable instead.  Although system calls are the
-most traditional and most obvious interaction points between userspace and the
-kernel, there are other possibilities -- choose what fits best for your
-interface.
+시스템 콜을 추가하기 전에 다른 대안을 적용할 수 있는지를 가장 먼저 생각해봐야
+한다. 시스템 콜을 사용하는 것이 유저 스페이스(user space)와 
+커널 스페이스 (kernel space)사이의 통신을 하는 가장 일반적/전통적이며
+사용자 입장에서 명확하게 구분할 수 있는 방법이지만, 다양한 대체 방안들이 
+존재하고 있다. 아래에서 설명하는 대체 방안 중 자신에게 맞는 것이 있는지 
+확인을 먼저 해보자.
 
  - If the operations involved can be made to look like a filesystem-like
    object, it may make more sense to create a new filesystem or device.  This
