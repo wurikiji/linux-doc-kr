@@ -5,6 +5,10 @@
 리눅스 커널에 시스템 콜을 추가하는 방법에 대해서 다룹니다. 
 :ref: 1. `Documentation/process/submitting-patches.rst <submittingpatches>`.
 
+번역자 노트: 본 문서의 내용은 실제 커널의 메인라인에 반영하기 위한 과정을 전제로
+설명하고 있습니다. 메일링 리스트를 통한 토론과정들, 메인라인에 반영하는 것을
+고려한 시스템 콜 추가 방식등에 대해서 다룹니다. 물론, 일반적으로 시스템 콜을
+추가하는 방법이 포함되어 있습니다.
 
 시스템 콜의 대안 (시스템 콜 외의 방법 사용하기)
 ----------------------------------------------
@@ -16,68 +20,65 @@
 존재하고 있다. 아래에서 설명하는 대체 방안 중 자신에게 맞는 것이 있는지 
 확인을 먼저 해보자.
 
- - If the operations involved can be made to look like a filesystem-like
-   object, it may make more sense to create a new filesystem or device.  This
-   also makes it easier to encapsulate the new functionality in a kernel module
-   rather than requiring it to be built into the main kernel.
+ - 수행하고자 하는 작업이 파일시스템과 비슷한 역할을 한다면, 새로운 파일시스템이나
+   디바이스 드라이버를 만드는 것이 더욱 효율적이다. 기존 커널의 메인 소스코드에
+   시스템 콜을 추가하는 것보다, 새로운 기능들을 추가하고 캡슐화하기 훨씬 쉽다.
+   (`read(2)`, `write(2)` 콜을 통해 유저가 쉽게 접근 할 수 있다.)
 
-     - If the new functionality involves operations where the kernel notifies
-       userspace that something has happened, then returning a new file
-       descriptor for the relevant object allows userspace to use
-       ``poll``/``select``/``epoll`` to receive that notification.
-     - However, operations that don't map to
-       :manpage:`read(2)`/:manpage:`write(2)`-like operations
-       have to be implemented as :manpage:`ioctl(2)` requests, which can lead
-       to a somewhat opaque API.
+     - 새로 추가된 기능이 커널 스페이스에서 일어난 일에 대한 결과를 유저에게 
+       전달해야 하는 경우에는, 해당 작업에 연관된 객체의 파일 디스크립터를 유저
+       스페이스로 전달하는 방식을 이용하면 된다. 유저는 파일 디스크립터를 사용하여
+       ``poll``/``select``/``epoll`` 명령을 통해 커널 스페이스의 정보 반환을 
+       대기할 수 있다.
+     - :manpage:`read(2)`/:manpage:`write(2)` 작업과 연관이 없는 모호한 기능들은
+       :manpage:`ioctl(2)` 기능을 이용하여 구현한다.
 
- - If you're just exposing runtime system information, a new node in sysfs
-   (see ``Documentation/filesystems/sysfs.txt``) or the ``/proc`` filesystem may
-   be more appropriate.  However, access to these mechanisms requires that the
-   relevant filesystem is mounted, which might not always be the case (e.g.
-   in a namespaced/sandboxed/chrooted environment).  Avoid adding any API to
-   debugfs, as this is not considered a 'production' interface to userspace.
- - If the operation is specific to a particular file or file descriptor, then
-   an additional :manpage:`fcntl(2)` command option may be more appropriate.  However,
-   :manpage:`fcntl(2)` is a multiplexing system call that hides a lot of complexity, so
-   this option is best for when the new function is closely analogous to
-   existing :manpage:`fcntl(2)` functionality, or the new functionality is very simple
-   (for example, getting/setting a simple flag related to a file descriptor).
- - If the operation is specific to a particular task or process, then an
-   additional :manpage:`prctl(2)` command option may be more appropriate.  As
-   with :manpage:`fcntl(2)`, this system call is a complicated multiplexor so
-   is best reserved for near-analogs of existing ``prctl()`` commands or
-   getting/setting a simple flag related to a process.
+ - 단순 시스템 정보를 표기하는 기능을 추가하길 원한다면, ``sysfs``
+   (``Documentation/filesystems/sysfs.txt`` 문서 참조) 나 ``/proc`` 파일 시스템을
+   사용하는 것이 적절하다. 단, 해당 파일시스템이 마운트가 되어 있어야 동작하는 
+   단점이 있으며, namespaced/sandboxed/chrooted 된 환경에서는 존재하지 않을 수
+   있다. ``debugfs`` 는 프로덕션 레벨의 커널에서는 사용하지 않는 것이 좋다.
+ - 추가하려는 기능이 특정 파일이나 파일디스크립터에 한정되어 있다면, 
+   :manpage:`fcntl(2)` 커맨드를 사용하는 것이 적절할 수 있다. 그러나
+   :manpage:`fcntl(2)` 는 매우 복잡한 작업을 내포하고 있어서, 기존에 존재하는
+   :manpage:`fcntl(2)` 기능과 매우 유사한 작업이거나 매우 간단한 작업일 경우에만
+   사용하길 권장한다. (특정 파일 디스크립터의 단순 플래그를 변화하는 작업 등)
+ - 추가하려는 기능이 특정 태스크나 프로세스에 한정되어 있다면,
+   :manpage:`prctl(2)` 커맨드를 사용하는 것이 적절할 수 있다. :manpage:`fcntl(2)`
+   와 동일하게 매우 복잡한 작업을 내포하고 있으므로, 기존 커맨드와 유사하거나 
+   매우 단순한 작업을 추가할때만 사용하길 권장한다.
 
 
-Designing the API: Planning for Extension
------------------------------------------
+API 설계하기: 추후 확장을 고려한 계획
+---------------------------------
 
-A new system call forms part of the API of the kernel, and has to be supported
-indefinitely.  As such, it's a very good idea to explicitly discuss the
-interface on the kernel mailing list, and it's important to plan for future
-extensions of the interface.
+새로운 시스템 콜은 커널 API의 일부로 동작하게 되며, 항상 지원되는 상태이어야 한다.
+그러므로 새로운 인터페이스에 대해 커널 메일링 리스트를 통해 활발히 토론하는 것이
+매우 바람직하며, 추후에 인터페이스가 확장될 것을 가정하고 설계하는 것이 중요하다.
 
+>> 번역 도움 필요
 (The syscall table is littered with historical examples where this wasn't done,
 together with the corresponding follow-up system calls --
 ``eventfd``/``eventfd2``, ``dup2``/``dup3``, ``inotify_init``/``inotify_init1``,
 ``pipe``/``pipe2``, ``renameat``/``renameat2`` -- so
 learn from the history of the kernel and plan for extensions from the start.)
 
-For simpler system calls that only take a couple of arguments, the preferred
-way to allow for future extensibility is to include a flags argument to the
-system call.  To make sure that userspace programs can safely use flags
-between kernel versions, check whether the flags value holds any unknown
-flags, and reject the system call (with ``EINVAL``) if it does::
+소수의 매개변수만을 필요로 하는 단순한 시스템콜을 구현할때는, 추후 확장성을
+고려하여 커널 버전을 구분하기 위한 플래그 변수를 추가하는 것이 가장 선호하는
+방식이다. 플래그 변수가 해당 커널 버전에서 허용하는 플래그만을 가지고 있음을
+확인하고, 허용하지 않는 플래그일 경우 시스템 콜을 취소 하여 (``EINVAL`` 같은
+반환 값을 전달) 서로 다른 커널 버전 사이에서 새로운 시스템 콜을 안전하게 
+사용할 수 있도록 한다.::
 
     if (flags & ~(THING_FLAG1 | THING_FLAG2 | THING_FLAG3))
         return -EINVAL;
 
-(If no flags values are used yet, check that the flags argument is zero.)
+(플래그 정보가 필요하지 않은 경우에는 플래그 값이 0인지를 판별하면 된다.)
 
-For more sophisticated system calls that involve a larger number of arguments,
-it's preferred to encapsulate the majority of the arguments into a structure
-that is passed in by pointer.  Such a structure can cope with future extension
-by including a size argument in the structure::
+많은 매개변수를 필요로 하는 복잡한 시스템 콜을 추가할 경우에는, 구조체를 만들어
+내부 정보를 캡슐화하고 포인터 변수를 통해 정보를 전달하는 것이 가장 선호하는
+방식이다. `size(크기정보)` 변수를 구조체 멤버로 포함하여 추후 인터페이스 확장에
+효과적으로 대처할 수 있다.::
 
     struct xyzzy_params {
         u32 size; /* userspace sets p->size = sizeof(struct xyzzy_params) */
