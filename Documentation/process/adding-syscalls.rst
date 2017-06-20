@@ -56,12 +56,11 @@ API 설계하기: 추후 확장을 고려한 계획
 그러므로 새로운 인터페이스에 대해 커널 메일링 리스트를 통해 활발히 토론하는 것이
 매우 바람직하며, 추후에 인터페이스가 확장될 것을 가정하고 설계하는 것이 중요하다.
 
->> 번역 도움 필요
-(The syscall table is littered with historical examples where this wasn't done,
-together with the corresponding follow-up system calls --
-``eventfd``/``eventfd2``, ``dup2``/``dup3``, ``inotify_init``/``inotify_init1``,
-``pipe``/``pipe2``, ``renameat``/``renameat2`` -- so
-learn from the history of the kernel and plan for extensions from the start.)
+(추후 확장을 고려하지 않은 다양한 시스템 콜들로 인해서 시스콜 (syscall) 테이블이
+여러개로 흩어져있다. ``eventfd``/``eventfd2``, ``dup2``/``dup3``,
+``inotify_init``/``inotify_init1``, ``pipe``/``pipe2``, ``renameat``/``renameat2``
+등이 대표적이 잘 못된 확장 예제이다. 그러므로 과거의 리눅스 커널에서 잘못된 점을
+반복하지 않도록 미리 향후 확장 가능성을 보고 API 설계를 시작하는 것이 바람직하다.)
 
 소수의 매개변수만을 필요로 하는 단순한 시스템콜을 구현할때는, 추후 확장성을
 고려하여 커널 버전을 구분하기 위한 플래그 변수를 추가하는 것이 가장 선호하는
@@ -87,30 +86,43 @@ learn from the history of the kernel and plan for extensions from the start.)
         u64 param_3;
     };
 
-As long as any subsequently added field, say ``param_4``, is designed so that a
-zero value gives the previous behaviour, then this allows both directions of
-version mismatch:
+향후 추가된 필드의 값이 0으로 설정 될  경우 이전 버전 방식으로 동작하도록 설계된
+시스템 콜 인 경우에는, 아래에서 제시하는 방법을 통해 하위/상위 버전 불일치 문제를 모두 
+해결하고 커널 버전에 맞는 적절한 작업을 수행하도록 할 수 있다.
+(예시에서의 추가된 필드는 ``param_4``):
 
- - To cope with a later userspace program calling an older kernel, the kernel
-   code should check that any memory beyond the size of the structure that it
-   expects is zero (effectively checking that ``param_4 == 0``).
- - To cope with an older userspace program calling a newer kernel, the kernel
-   code can zero-extend a smaller instance of the structure (effectively
-   setting ``param_4 = 0``).
+ - 유저 스페이스의 애플리케이션이 이전 (옛) 버전의 리눅스 커널 구조체를 사용하여
+   시스템 콜을 사용할 경우, 커널로 전달된 시스템 콜 매개변수에서 
+   size 변수만큼의 길이 뒤의 필드들이 0인지를 검사한다. (``param_4 == 0``)
+   번역자 추가: 유저 스페이스에서 전달된 매개변수의 경우, 커널 스페이스에서
+   바로 사용하지 않고 해당 시스템 콜 내에서 구조체를 다시 선언 후 유저 
+   매개변수를 복사해서 사용하게 된다. 매개변수를 복사하기 전에 커널 스페이스에서
+   선언한 구조체를 모두 0으로 초기화 한 뒤 유저의 매개변수를 복사할 경우,
+   유저가 사용한 예전 구조체에 추가된 필드 들은 모두 0으로 남아있게 된다. 이를
+   통해 유저가 이전 버전의 리눅스 커널을 기대하고 시스템 콜을 호출했음을 알 수
+   있으므로, 이전 버전의 동작방식대로 수행하면 된다.
+ - 유저 스페이스의 애플리케이션이 최신 버전의 리눅스 커널 구조체를 사용하여
+   시스템 콜을 사용할 경우 (추가된 필드들이 존재하는 경우), 커널로 전달된
+   매개변수의 추가 필드 부분들이 0인 경우는 원하는 작업을 수행하고, 그 외의 
+   경우는 사이즈 에러 혹은 버전 에러를 리턴하면 된다.
 
-See :manpage:`perf_event_open(2)` and the ``perf_copy_attr()`` function (in
-``kernel/events/core.c``) for an example of this approach.
+:manpage:`perf_event_open(2)` 와 ``perf_copy_attr()`` 
+(in ``kernel/events/core.c``) 함수가 본 설명의 훌륭한 예제이다. 
 
+API 설계하기: 다른 고려사항들
+----------------------------
 
-Designing the API: Other Considerations
----------------------------------------
+새로 추가하는 시스템 콜을 통해서 커널 객체들을 접근하도록 하는 경우에는 파일
+디스크립터 구조체를 통해서 접근하도록 해야한다. 커널 내에 이미 존재하는 메커니즘을
+통해서 사용할 수 있고, 파일 디스크립터를 통해서 충분히 제어가능한 경우에는 
+새로운 객체를 만들지 않는 것이 좋다. 
 
-If your new system call allows userspace to refer to a kernel object, it
-should use a file descriptor as the handle for that object -- don't invent a
-new type of userspace object handle when the kernel already has mechanisms and
-well-defined semantics for using file descriptors.
+    번역 도움 필요 
 
-If your new :manpage:`xyzzy(2)` system call does return a new file descriptor,
+새로운 시스템 콜  :manpage:`xyzzy(2)` 가 파일 디스크립터를 생성하여 반환하는 경우
+`flags` 에 대응하는 변수가 ``O_CLOEXEC`` 플래그 설정을 가지고 있도록 해야한다.
+이를 통해서 다른 쓰레드에서 의도치 않은 ``fork()`` 나 ``execve()`` 호출이 
+발생하는 경우 system call does return a new file descriptor,
 then the flags argument should include a value that is equivalent to setting
 ``O_CLOEXEC`` on the new FD.  This makes it possible for userspace to close
 the timing window between ``xyzzy()`` and calling
