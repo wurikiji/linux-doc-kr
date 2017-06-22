@@ -184,7 +184,7 @@ registers.  (This concern does not apply if the arguments are part of a
 structure that's passed in by pointer.)
 
 
-Proposing the API
+API 제안하기
 -----------------
 
 To make new system calls easy to review, it's best to divide up the patchset
