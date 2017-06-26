@@ -5,3 +5,5 @@
 # 번역 초안 완료
 - [Documentation/process/kernel-docs.rst](Documentation/process/kernel-docs.rst):
 	리눅스 커널 관련 문서들 정보
+- [Documentation/index.rst](Documentation/index.rst):
+	리눅스 문서의 최상위 문서 (문서 인덱스)

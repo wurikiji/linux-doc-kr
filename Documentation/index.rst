@@ -6,29 +6,29 @@
 Welcome to The Linux Kernel's documentation
 ===========================================
 
-This is the top level of the kernel's documentation tree.  Kernel
-documentation, like the kernel itself, is very much a work in progress;
-that is especially true as we work to integrate our many scattered
-documents into a coherent whole.  Please note that improvements to the
-documentation are welcome; join the linux-doc list at vger.kernel.org if
-you want to help out.
+본 문서는 커널 문서 폴더의 최상위 문서이다. 대부분의 커널 문서 및 소스코드는
+현재 진행형인 작업 문서들이고, 흩어진 정보들을 하나의 문서로 취합하는 작업중에
+있다. 문서에 대한 수정/반영 사항이나 문서의 질을 높이는 여러가지 제안을 해주길
+바란다. 리눅스 문서화는 vger.kernel.org의 linux-doc list에서 진행 중이므로
+많은 참여를 부탁한다. 
 
-User-oriented documentation
----------------------------
+커널 개발자 및 커널 사용자를 위한 문서
+-------------------------------------
 
-The following manuals are written for *users* of the kernel — those who are
-trying to get it to work optimally on a given system.
+아래의 문서는 커널 개발자 및 커널 사용자들이, 자신의 시스템 구성 환경에서 
+커널이 올바르고 최적의 상황으로  동작하도록 구성하는데 도움을 주는 내용을
+포함한다. 
 
 .. toctree::
    :maxdepth: 2
 
    admin-guide/index
 
-Application-developer documentation
------------------------------------
+애플리케이션 개발자를 위한 문서
+------------------------------
 
-The user-space API manual gathers together documents describing aspects of
-the kernel interface as seen by application developers.
+유저 스페이스 API 메뉴얼은 애플리케이션 개발자들이 사용하는 다양한 커널
+인터페이스들에 대한 정보와 간단한 설명 및 사용법을 포함하고 있다. 
 
 .. toctree::
    :maxdepth: 2
@@ -36,14 +36,14 @@ the kernel interface as seen by application developers.
    userspace-api/index	      
 
 
-Introduction to kernel development
+커널 개발을 시작하기 위한 기본 문서
 ----------------------------------
 
-These manuals contain overall information about how to develop the kernel.
-The kernel community is quite large, with thousands of developers
-contributing over the course of a year.  As with any large community,
-knowing how things are done will make the process of getting your changes
-merged much easier.
+아래 문서들은 커널을 어떻게 개발하는 지에 대한 전체적인 정보를 담고 있다.
+커널 커뮤니티는 수년간 수천 수만의 개발자들이 발전에 기여해온 매우 커다란
+커뮤니티이다. 여타 다른 대형 커뮤니티와 같이, 어떤 방식으로 개발이 진행되는지
+알아두는 것은 자신의 코드가 커널 메인 코드에 머지 되길 원하는 
+개발자들에게 큰 도움이 될 것이다.
 
 .. toctree::
    :maxdepth: 2
@@ -52,14 +52,13 @@ merged much easier.
    dev-tools/index
    doc-guide/index
 
-Kernel API documentation
-------------------------
+커널 API 문서
+-------------
 
-These books get into the details of how specific kernel subsystems work
-from the point of view of a kernel developer.  Much of the information here
-is taken directly from the kernel source, with supplemental material added
-as needed (or at least as we managed to add it — probably *not* all that is
-needed).
+아래 문서들은 커널 내부 개발자들의 관점에서 바라볼때, 특정 커널 서브 시스템이
+어떻게 동작하는지에 대해 자세한 내용을 수록하고 있다. 대부분의 내용들은
+커널 코드의 구성을 직접적으로 해석한 것으로 이루어져 있으며, 추가 설명을 
+위해 필요한 보충물들을 포함하고 있다. 
 
 .. toctree::
    :maxdepth: 2
@@ -73,15 +72,17 @@ needed).
    sound/index
    crypto/index
 
-Korean translations
+한국어 번역 문서
 -------------------
+
+번역자 노트: 큰 기대는 하지 마세요. 몇개 없습니다.
 
 .. toctree::
    :maxdepth: 1
 
    translations/ko_KR/index
 
-Chinese translations
+중국어 번역 문서
 --------------------
 
 .. toctree::
@@ -89,7 +90,7 @@ Chinese translations
 
    translations/zh_CN/index
 
-Japanese translations
+일본어 번역 문서
 ---------------------
 
 .. toctree::
