@@ -1,46 +1,41 @@
 .. _codingstyle:
 
-Linux kernel coding style
-=========================
+리눅스 커널 코딩 스타일
+=======================
 
-This is a short document describing the preferred coding style for the
-linux kernel.  Coding style is very personal, and I won't **force** my
-views on anybody, but this is what goes for anything that I have to be
-able to maintain, and I'd prefer it for most other things too.  Please
-at least consider the points made here.
+본 문서는 리눅스 커널 개발에서 사용되는 코딩 스타일에 대한 간략한 소개를 하는
+문서이다. 코딩 스타일은 본래 매우 개인적인 것이고 그 누구도 강요할 수 없지만, 
+커널을 동시에 여러 개발자가 개발하고 관리하기 위해 반드시 필요한 규칙이다. 최소한
+본 문서에서 알려주는 부분들만이라도 명심하도록 하자. 
 
-First off, I'd suggest printing out a copy of the GNU coding standards,
-and NOT read it.  Burn them, it's a great symbolic gesture.
+시작하기에 앞서, GNU 코딩 스타일 표준을 프린트하고 찢고 불태워버리도록 하자.
 
-Anyway, here goes:
+그럼 지금부터 커널 코딩 스타일을 알보도록 하자:
 
-
-1) Indentation
+1) 들여쓰기 
 --------------
 
-Tabs are 8 characters, and thus indentations are also 8 characters.
-There are heretic movements that try to make indentations 4 (or even 2!)
-characters deep, and that is akin to trying to define the value of PI to
-be 3.
+Tab은 보통 8개의 공백 문자이기 때문에, tab을 사용하는 들여쓰기 또한 8개의 공백
+문자이다. 들여쓰기를 4개의 문자나 2개의 문자로 바꾸려는 시도들이 있지만 모두 
+이단의 시도이고, 원주율 PI의 값을 3이라고 규정하는것과 다를바 없다! 
 
-Rationale: The whole idea behind indentation is to clearly define where
-a block of control starts and ends.  Especially when you've been looking
-at your screen for 20 straight hours, you'll find it a lot easier to see
-how the indentation works if you have large indentations.
+들여쓰기의 이유: 들여쓰기를 하는 본질적인 이유는 코드 블록이 어디서 시작되고 
+어디서 끝나는지 명확하게 정의하기 위해서이다. 20시간이 넘도록 코드를 주구장창
+보고있는 상황이라면, 큰 폭의 들여쓰기로 설정된 코드가 훨씬 읽고 이해하기 쉽다는
+것을 바로 꺠달을 수 있을 것이다. 
 
-Now, some people will claim that having 8-character indentations makes
-the code move too far to the right, and makes it hard to read on a
-80-character terminal screen.  The answer to that is that if you need
-more than 3 levels of indentation, you're screwed anyway, and should fix
-your program.
+8 문자열의 들여쓰기가 코드를 너무 오른쪽으로 밀어내서 80문자열을 나타내는 터미널
+스크린 사이즈에 맞지 않아, 읽기 불편하다고 불평하는 사람들이 있다. 그러나, 그것은
+큰 폭의 들여쓰기가 문제가 아니라 3번을 초과하는 들여쓰기가 생기도록 만든 당신이
+문제이고, 당신의 코드가 문제이므로, 프로그램을 수정하여 다시 코드를 짜는것이 더욱 
+현명하다. 
 
-In short, 8-char indents make things easier to read, and have the added
-benefit of warning you when you're nesting your functions too deep.
-Heed that warning.
+8 문자열의 들여쓰기는 코드의 가독성을 높히고, 코드 내의 nested 된 블록들이 얼마나
+많이 존재하는지 알려주는 이점이 있다. 
 
-The preferred way to ease multiple indentation levels in a switch statement is
-to align the ``switch`` and its subordinate ``case`` labels in the same column
-instead of ``double-indenting`` the ``case`` labels.  E.g.:
+switch 구문에서 중복된 들여쓰기를 완화하는 방식중에서는, ``switch`` 와 하위 문구인
+``case`` 레이블을 같은 열에 위치시켜 ``case`` 를 ``double-indenting`` 하지 않도록 
+하는 방식을 가장 선호한다. 아래는 그 예제이다.
 
 .. code-block:: c
 
@@ -61,43 +56,45 @@ instead of ``double-indenting`` the ``case`` labels.  E.g.:
 		break;
 	}
 
-Don't put multiple statements on a single line unless you have
-something to hide:
+
+일부러 다른 개발자를 헷갈리게 하려는 의도가 아니라면, 
+두 개 이상의 코드 명령어를 한 줄에 몰아서 쓰지 않도록 한다. 
 
 .. code-block:: c
 
 	if (condition) do_this;
 	  do_something_everytime;
 
-Don't put multiple assignments on a single line either.  Kernel coding style
-is super simple.  Avoid tricky expressions.
+두 개 이상의 대입/할당/초기화 연산 구문을 한줄에 쓰지 않도록한다. 커널 코딩 스타일은
+매우 단순하고, 교묘한 표현 (tricky expression)을 지양한다. 
 
-Outside of comments, documentation and except in Kconfig, spaces are never
-used for indentation, and the above example is deliberately broken.
+기술 문서, 주석과 예외적인 Kconfig 파일을 제외하고 모든 코드에서, space를 들여쓰기에
+사용하지 않도록 한다. 위의 예제들은 문서 작성의 편의및 설명이 용의성을 위해 일부러
+space 처리된 것이다. 기본적으로 코드상의 모든 들여쓰기는 tab 그 자체를 이용해야 한다.
 
-Get a decent editor and don't leave whitespace at the end of lines.
+코딩하기에 적합한 에디터를 사용하도록 하고, 줄의 끝에는 공백을 남기지 않도록 한다.
 
 
-2) Breaking long lines and strings
+2) 긴 줄이나 문자열을 분리하는 방법
 ----------------------------------
 
-Coding style is all about readability and maintainability using commonly
-available tools.
+코딩 스타일은 일반적으로 사용가능한 툴들을 이용하여 가독성과 코드 유지성을 결정하는
+규칙이다.
 
-The limit on the length of lines is 80 columns and this is a strongly
-preferred limit.
+한 줄은 최대 80자를 수용하는 것이 대부분의 상황에서 일반적이다.
 
-Statements longer than 80 columns will be broken into sensible chunks, unless
-exceeding 80 columns significantly increases readability and does not hide
-information. Descendants are always substantially shorter than the parent and
-are placed substantially to the right. The same applies to function headers
-with a long argument list. However, never break user-visible strings such as
-printk messages, because that breaks the ability to grep for them.
+한 줄에 80자를 넘게 작성할 때 훨씬 가독성이 뛰어난 경우를 제외하고는, 80자 이상의
+코드 구문은 다음 줄로 행 전환하여 기입하도록 한다. 
+연속되는 아랫 줄은 항상 윗 줄보다 더 짧은 코드 구문을 가지고, 윗 줄보다 오른쪽에서
+시작하도록 한다. 함수 헤더의 파라미터 리스트가 긴 경우에도 해당된다.
+printk와 같은 유저 가독성에 신경 쓸 필요가 없는 경우는, grep 등을 통해 원하는 구문을
+빨리 찾아낼 수 있도록 줄 바꿈을 하지 않도록 한다. 
 
 
-3) Placing Braces and Spaces
+3) 중괄호와 공백의 위치
 ----------------------------
 
+C 코딩 스타일을 언급할 때 항상 이슈가 되는 것 중 하나가 중괄호의 위치이다. 
 The other issue that always comes up in C styling is the placement of
 braces.  Unlike the indent size, there are few technical reasons to
 choose one placement strategy over the other, but the preferred way, as
