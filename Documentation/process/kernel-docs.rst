@@ -76,13 +76,9 @@ Location은 커널 소스 트리의 최상위 폴더로부터 상대 경로를 �
       :Location: Documentation/DocBook/kernel-locking.tmpl
       :Keywords: locks, locking, spinlock, semaphore, atomic, race
         condition, bottom halves, tasklets, softirqs.
-      :Description: The title says it all: document describing the
-        locking system in the Linux Kernel either in uniprocessor or SMP
-        systems.
-      :Notes: "It was originally written for the later (>2.3.47) 2.3
-        kernels, but most of it applies to 2.2 too; 2.0 is slightly
-        different". Freely redistributable under the conditions of the GNU
-        General Public License.
+      :Description: 제목에서 내용이 뭔지 알 수 있다: 단일 코어 시스템과 SMP 상황
+        구분 없이 리눅스 커널에서의 locking 시스템에 대한 내용을 다룬다. 
+      :Notes: 너무 낮은 커널 버전입니다.
 
 On-line docs
 ------------
